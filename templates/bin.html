@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a; /* Dark background color */
+            color: #fff; /* Light text color */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #2d2d2d; /* Darker container background color */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Light shadow */
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            word-wrap: break-word;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #pasteOutput {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #444; /* Darker border color */
+            border-radius: 4px;
+            word-wrap: break-word;
+        }
+
+        #pasteLink {
+            color: #8ab4f8; /* Adjust the link color to fit your theme */
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #pasteLink:hover {
+            color: #5c80b6; /* Adjust the link hover color to fit your theme */
+        }
+    </style>
+    <title>Pastebin Alternative</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Pastebin Alternative</h1>
+        <p>Pastes are deleted everytime server is rebooted, please don't rely for this to keep ur pastes up for the longest time.</p>
+        <textarea id="pasteInput" placeholder="Enter your text here..."></textarea>
+        <button onclick="createPaste()">Create Paste</button>
+        <div id="pasteOutput"></div>
+    </div>
+    <script>
+        function createPaste() {
+            const inputText = document.getElementById("pasteInput").value;
+
+            if (inputText.trim() !== "") {
+                fetch('/api/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: inputText }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const pasteUrl = data.paste_url;
+                    document.getElementById("pasteOutput").innerHTML = `Paste created! Paste Link: <a id="pasteLink" href="${pasteUrl}" target="_blank">${pasteUrl}</a>`;
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert("Please enter some text before creating a paste.");
+            }
+        }
+    </script>
+</body>
+</html>
